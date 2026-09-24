@@ -1,0 +1,18 @@
+# Python cache and test outputs
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Local virtual environments
+.venv/
+venv/
+
+# Local source data and generated outputs
+data/raw/*
+!data/raw/.gitkeep
+data/warehouse.db
+data/warehouse.db-*
+reports/

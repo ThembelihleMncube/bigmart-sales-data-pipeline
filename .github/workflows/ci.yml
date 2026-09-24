@@ -1,0 +1,46 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+      - "codex/**"
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  quality-and-pipeline:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7.0.1
+
+      - name: Set up Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements.txt
+
+      - name: Lint
+        run: ruff check .
+
+      - name: Run tests
+        run: pytest -q
+
+      - name: Run the ETL pipeline
+        run: python -m src.pipeline.run
+
+      - name: Run an analytics query
+        run: python scripts/run_query.py sql/analytics/01_sales_by_outlet_type.sql
+
+      - name: Train and evaluate the sales model
+        run: python -m src.model.train
